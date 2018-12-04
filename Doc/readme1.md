@@ -16,29 +16,29 @@ Angular with ASP.NET Core
 ## 建立專案目錄
 建立Dawn目錄
 ## 建立Moon專案
-```
+```shell
 Dawn$ ng new Moon --skip-install --routing --style=scss
 Moon$ rm -rf .git
 ```
 ## 建立Sun專案
-```
+```shell
 Dawn$ dotnet new webapi -o Sun
 Dawn$ dotnet dev-certs https --trust
 Sun$ curl https://raw.githubusercontent.com/github/gitignore/master/VisualStudio.gitignore --output .gitignore
 ```
 ## 加入版控
-```
+```shell
 Dawn$ git init
 Dawn$ git add .
 Dawn$ git commit -m "first commit"
 ```
 ## 調整Moon程式
 修改Moon/angular.json，為了輸出到ASP.NET Core的專案。
-```
+```json
 "outputPath": "../Sun/wwwroot",
 ```
 新增proxy.conf.json，為了Debug使用
-```
+```json
 {
   "/api":{
     "target": "http://localhost:5000",
@@ -46,43 +46,71 @@ Dawn$ git commit -m "first commit"
   }
 }
 ```
-修改package.json，為了啟用Debug
-```
-"start": "ng serve --proxy-config proxy.conf.json -o",
-"build": "ng build --prod",
+修改package.json
+```json
+{
+  "scripts": {
+    "start": "ng serve --proxy-config proxy.conf.json -o",
+    "build": "ng build --prod",
+  },
 ```
 修改src/index.html，為了站台不一定在Root下的問題。
-```
+```html
 <base href="./">
 ```
 修改 Moon/.gitignore  
 找到VSCode
-```
+```sh
 # IDE - VSCode
 .vscode/
 ```
 ## 調整Sun程式
-修改Startup.cs，為了實現SPA設計。
-```
+修改Startup.cs
+1. 為了WebAPI產Json時將屬性保持原名。
+2. 為了實現SPA設計。
+```cs
 using System.IO;
 using Microsoft.AspNetCore.Http;
 ....
-// app.UseHttpsRedirection();
-app.UseMvc();
-app.UseDefaultFiles();
-app.UseStaticFiles();
-app.Run(async (context) =>
+public void ConfigureServices(IServiceCollection services)
 {
-    if (!Path.HasExtension(context.Request.Path.Value))
+    services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+        .AddJsonOptions(options =>
+        {
+            options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+        });
+}
+
+// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+    if (env.IsDevelopment())
     {
-        await context.Response.SendFileAsync(Path.Combine(env.WebRootPath, "index.html"));
+        app.UseDeveloperExceptionPage();
     }
-});
+    else
+    {
+        app.UseHsts();
+    }
+
+    // app.UseHttpsRedirection();
+    app.UseMvc();
+    app.UseDefaultFiles();
+    app.UseStaticFiles();
+    app.Run(async (context) =>
+    {
+        if (!Path.HasExtension(context.Request.Path.Value))
+        {
+            await context.Response.SendFileAsync(Path.Combine(env.WebRootPath, "index.html"));
+        }
+    });
+    app.UseMvc();
+}
 ```
 修改 Sun/.gitignore
 1. 找到 #wwwroot/，去掉#。
 1. 加上VSCode。
-```
+```sh
 # Uncomment if you have tasks that create the project's static files in wwwroot
 wwwroot/
 ...
@@ -90,38 +118,38 @@ wwwroot/
 .vscode/
 ```
 ## 版控
-```
+```shell
 Dawn$ git add .
 Dawn$ git commit -m "starter"
 Dawn$ git tag starter
 ```
 ## 開始建置
-```
+```shell
 Moon$ npm i
 Moon$ npm run build
 Sun$ dotnet restore
 Sun$ dotnet run
 ```
-如果設定了
-```
-> npm config set prefer-offline true
+如果設定了, 想要使用最新版。
+```shell
+$ npm config set prefer-offline true
 ```
 可改用以下指令更新套件
-```
+```shell
 Moon$ npm update
 Moon$ npm update -D
 Moon$ npm run build
 Sun$ dotnet restore
 Sun$ dotnet run
-
 ```
-瀏覽  
+Ctrl+C 結束程式
+### 瀏覽
 http://localhost:5000/  
 https://localhost:5001/
 
 ## 完成品測試
-建置專案(依實際線上版本決定), 例如Dawn_7_0_6
-```
+建置專案
+```shell
 $ git clone https://github.com/hyflamewow/Dawn.git
 Dawn$ git checkout -b lab starter
 Moon$ npm i
@@ -134,7 +162,7 @@ http://localhost:5000/
 https://localhost:5001/
 
 收尾
-```
+```shell
 Dawn$ git checkout master
 Dawn$ branch -d lab
 ```
