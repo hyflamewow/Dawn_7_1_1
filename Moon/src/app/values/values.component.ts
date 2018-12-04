@@ -20,5 +20,20 @@ export class ValuesComponent implements OnInit {
         this.list = list;
       });
   }
-
+  getNotFound() {
+    this.valuesService.getNotFound()
+      .subscribe();
+  }
+  getBadRequest() {
+    this.valuesService.getBadRequest()
+      .subscribe();
+  }
+  getNotExists() {
+    this.valuesService.getNotExists()
+      .subscribe();
+  }
+  getException() {
+    this.valuesService.getException()
+      .subscribe();
+  }
 }

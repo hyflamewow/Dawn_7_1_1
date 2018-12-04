@@ -41,5 +41,11 @@ namespace Sun.Controllers
         public void Delete(int id)
         {
         }
+
+        [HttpGet("Exception")]
+        public IActionResult GetException()
+        {
+            throw new Exception("GetException");
+        }
     }
 }

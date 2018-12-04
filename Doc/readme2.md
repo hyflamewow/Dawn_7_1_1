@@ -114,7 +114,7 @@ Dawn$ branch -d lab
 ```
 
 ## 完成品測試
-建置專案(依實際線上版本決定), 例如Dawn_7_0_6
+建置專案
 ```
 $ git clone https://github.com/hyflamewow/Dawn.git
 Dawn$ git checkout -b lab webapi
