@@ -339,3 +339,6 @@ ASALocalRun/
 
 # IDE - VSCode
 .vscode/
+
+# DB
+*.sqlite

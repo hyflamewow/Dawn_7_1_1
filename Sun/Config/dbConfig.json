@@ -1,0 +1,6 @@
+{
+    "MainDB": {
+        "Driver": "SQLITE",
+        "ConnStr": "Movies.sqlite"
+    }
+}

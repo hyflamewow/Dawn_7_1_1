@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ValuesComponent } from './values/values.component';
+import { TicketComponent } from './ticket/ticket.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/values', pathMatch: 'full' },
-  { path: 'values', component: ValuesComponent }
+  { path: '', redirectTo: '/ticket', pathMatch: 'full' },
+  { path: 'values', component: ValuesComponent },
+  { path: 'ticket', component: TicketComponent }
 ];
 
 @NgModule({

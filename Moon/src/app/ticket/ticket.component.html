@@ -1,0 +1,24 @@
+<ul>
+  <li *ngFor="let item of list">
+    {{item.ID}}, {{item.Name}}, {{item.Seat}}, {{item.Amount | currency:'TWD':'symbol-narrow':'1.0-0'}},
+    {{item.DateTime|date:'yyyy-MM-dd HH:mm:ss'}}
+  </li>
+</ul>
+<form [formGroup]="mainForm">
+  <label>ID:
+    <input type="number" formControlName="ID">
+  </label><br>
+  <label>Name:
+    <input type="text" formControlName="Name">
+  </label><br>
+  <label>Seat:
+    <input type="text" formControlName="Seat">
+  </label><br>
+  <label>Amount:
+    <input type="number" formControlName="Amount">
+  </label><br>
+  <label>DateTime:
+    <input type="datetime" formControlName="DateTime">
+  </label>
+</form>
+<button (click)="save()">Save</button>
