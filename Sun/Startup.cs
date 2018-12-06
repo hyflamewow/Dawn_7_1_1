@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Cors.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -33,12 +34,26 @@ namespace Sun
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddJsonOptions(options =>
                 {   // #維持屬性名稱大小寫
-                    options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+            options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
                 });
+            services.AddCors(options =>
+                {
+                    options.AddPolicy("CorsPolicy",
+                        builder => builder
+                            .AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials()
+                    );
+                });
+            services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add(new CorsAuthorizationFilterFactory("CorsPolicy"));
+            });
             ConfigFiles configFiles = Configuration.GetSection("ConfigFiles").Get<ConfigFiles>();
             // #目前不考慮整合ASP.NET的Log機制, 因為看不出優點, 單純用NLog就夠了。
             NLog.LogManager.Configuration = new XmlLoggingConfiguration(configFiles.NLogConfig);
-            var dbConfig = JsonConvert.DeserializeObject<Dictionary<string,DBConfig>>(File.ReadAllText(configFiles.DBConfig));
+            var dbConfig = JsonConvert.DeserializeObject<Dictionary<string, DBConfig>>(File.ReadAllText(configFiles.DBConfig));
             // #將DBHelper放入DI
             services.AddSingleton<DBHelper>(new DBHelper(dbConfig));
         }
@@ -59,6 +74,8 @@ namespace Sun
             app.UseMvc();
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            // #使用CORS
+            app.UseCors("CorsPolicy");
             // #實作SPA
             app.Run(async (context) =>
             {
