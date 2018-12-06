@@ -12,6 +12,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -47,6 +48,7 @@ export function tokenGetter() {
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
+    MatTooltipModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,

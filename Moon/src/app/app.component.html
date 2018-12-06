@@ -3,9 +3,12 @@
         <span>Dawn</span>
         <a mat-button routerLink="values">Values</a>
         <a mat-button routerLink="ticket">Ticket</a>
+        <a mat-button routerLink="authTicket">authTicket</a>
         <span fxFlex="1 1 auto"></span>
-        <mat-icon class="toolbar-space">favorite</mat-icon>
-        <mat-icon class="toolbar-space">delete</mat-icon>
+        <span *ngIf="isUserAuthenticated()">{{userName}}</span>
+        <button mat-icon-button matTooltip="登出" *ngIf="isUserAuthenticated()" (click)="logout()">
+            <mat-icon>exit_to_app</mat-icon>
+        </button>
     </mat-toolbar-row>
 </mat-toolbar>
 <router-outlet></router-outlet>

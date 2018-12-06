@@ -43,5 +43,11 @@ export class LoginComponent implements OnInit {
         this.invalidLogin = true;
       });
   }
+  defultAction(event) {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      this.login();
+    }
+  }
 
 }
