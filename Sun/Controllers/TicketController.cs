@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Dapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sun.DB;
 using Sun.DB.Entity;
@@ -14,14 +15,15 @@ namespace Sun.Controllers
     [ApiController]
     public class TicketController : ControllerBase
     {
-        private NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-        private DBHelper _dbHelper;
+        private static NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+        private readonly DBHelper _dbHelper;
         public TicketController(DBHelper dbHelper)
         {
             _dbHelper = dbHelper;
             _dbHelper.CreateDB();
         }
         [HttpGet]
+        
         public ActionResult<IEnumerable<TicketRow>> Get()
         {
             var list = _dbHelper.GetTicketList();
@@ -29,6 +31,7 @@ namespace Sun.Controllers
         }
 
         [HttpPost()]
+        [Authorize]
         public void Post([FromBody] TicketRow ticket)
         {
             // #日期要換成本地時間

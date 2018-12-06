@@ -4,7 +4,6 @@ import { MessageService } from '../message.service';
 import { TicketElf } from './ticket-elf';
 import { catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
-import { FormBuilder, Validators } from '@angular/forms';
 import { AppSettingsService } from '../services/app-settings.service';
 
 const httpOptions = {
@@ -29,7 +28,6 @@ export class TicketService {
       );
   }
   getList(): Observable<TicketElf[]> {
-    this.log(this.apiUrlRoot.concat('ticket'));
     return this.http.get<TicketElf[]>(this.apiUrlRoot.concat('ticket'))
       .pipe(
         catchError(this.handleError('getList', []))
@@ -43,8 +41,11 @@ export class TicketService {
           break;
         // case 204: // #NoContent
         //   break;
-        case 400: // #BadRequest
+        case 400: // #BadRequest, 通常指參數錯誤
           this.log('400服務不存在');
+          break;
+        case 401: // #Unauthorized();
+          this.log('401未授權');
           break;
         case 404: // #NotFound
           this.log('404服務不存在');

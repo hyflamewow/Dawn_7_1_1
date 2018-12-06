@@ -1,0 +1,27 @@
+<form [formGroup]="form" (ngSubmit)="login()">
+  <div fxLayoutAlign="center">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Dawn</mat-card-title>
+        <mat-card-subtitle>請登入</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-form-field>
+          <input matInput type="text" placeholder="Account" formControlName="Account" autofocus>
+          <button mat-button *ngIf="form.value.Account" matSuffix mat-icon-button aria-label="Clear" (click)="form.patchValue({Account:''})">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field><br>
+        <mat-form-field>
+          <input matInput type="password" placeholder="Password" formControlName="Password">
+          <button mat-button *ngIf="form.value.Password" matSuffix mat-icon-button aria-label="Clear" (click)="form.patchValue({Password:''})">
+              <mat-icon>close</mat-icon>
+            </button>  
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button type="submit" color="primary">登入</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</form>

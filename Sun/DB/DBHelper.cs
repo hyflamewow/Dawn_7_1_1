@@ -36,12 +36,18 @@ namespace Sun.DB
                 try
                 {
                     string strSQL = $@"
-CREATE TABLE Ticket (
-    ID INTEGER NOT NULL,
-    Name TEXT NOT NULL,
-    Seat TEXT NOT NULL,
-    Amount REAL NOT NULL,
-    DateTime DATETIME NOT NULL)
+CREATE TABLE [Ticket](
+    [ID] INT PRIMARY KEY NOT NULL, 
+    [Name] VARCHAR(50) NOT NULL, 
+    [Seat] VARCHAR(50) NOT NULL, 
+    [Amount] FLOAT NOT NULL, 
+    [DateTime] DATETIME NOT NULL);
+CREATE TABLE [Auth_User](
+    [Account] NVARCHAR(50) PRIMARY KEY NOT NULL, 
+    [Password] VARCHAR(50) NOT NULL);
+INSERT INTO Auth_User
+       ( Account,  Password)
+VALUES ('hyflame', 'password')
 ";
                     conn.Execute(strSQL);
                 }
@@ -101,5 +107,34 @@ VALUES (@ID, @Name, @Seat, @Amount, @DateTime)
             }
         }
         #endregion Ticket
+        #region 登入
+        public Auth_UserRow GetUser(string account, string password)
+        {
+            DbConnection conn = CreateConn("MainDB");
+            try
+            {
+                string strSQL = @"
+-- DECLARE @account varchar(50)
+-- DECLARE @password varchar(50)
+-- SET @account = 'hyflame'
+-- SET @password = 'password'
+SELECT *
+    FROM [Auth_User]
+    WHERE Account = @account
+    AND Password = @password";
+                var item = conn.QuerySingleOrDefault<Auth_UserRow>(strSQL, new { account, password });
+                return item;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "GetUser");
+                throw ex;
+            }
+            finally
+            {
+                conn?.Close();
+            }
+        }
+        #endregion 登入 
     }
 }
